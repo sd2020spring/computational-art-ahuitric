@@ -36,6 +36,13 @@ def div(a,b):
     else:
         return a
 
+def powie(a):
+    i = random.randint(3,6)
+    while i > 0:
+        a *= i
+        i-=1
+    return a
+
 def build_random_function(min_depth, max_depth):
     """Build a random function.
     Builds a random function of depth at least min_depth and depth at most
@@ -49,7 +56,7 @@ def build_random_function(min_depth, max_depth):
         (See the assignment writ-eup for details on the representation of
         these functions)
     """
-    rand = random.randint(1,8)
+    rand = random.randint(1,9)
     f = []
     if max_depth >= 1:
         if min_depth >= 1:
@@ -67,6 +74,8 @@ def build_random_function(min_depth, max_depth):
                 f = ["yy", build_random_function(min_depth - 1, max_depth - 1)]
             elif rand == 7:
                 f = ["sqr", build_random_function(min_depth - 1, max_depth - 1)]
+            elif rand == 8:
+                f = ["powie", build_random_function(min_depth - 1, max_depth - 1)]
             else:
                 f = ["div", build_random_function(min_depth - 1, max_depth - 1), build_random_function(min_depth - 1, max_depth - 1)]
         else:
@@ -76,19 +85,7 @@ def build_random_function(min_depth, max_depth):
                 else:
                     return ["yy"]
     return f
-#def build_random_lambda_function(min_depth, max_depth):
-    """Build a random function.
-    Builds a random function of depth at least min_depth and depth at most
-    max_depth. (See the assignment write-up for the definition of depth
-    in this context)
-    Args:
-        min_depth: the minimum depth of the random function
-        max_depth: the maximum depth of the random function
-    Returns:
-        The randomly generated function represented as a nested list.
-        (See the assignment writ-eup for details on the representation of
-        these functions)
-    """
+
 
 def evaluate_random_function(f, x, y):
     """Evaluate the random function f with inputs x,y.
@@ -119,6 +116,8 @@ def evaluate_random_function(f, x, y):
         fun = sin_pi(evaluate_random_function(f[1], x, y))
     elif f[0] == 'sqr':
         fun = sqr(evaluate_random_function(f[1], x, y))
+    elif f[0] == 'powie':
+        fun = powie(evaluate_random_function(f[1],x,y))
     else:
         fun = div(evaluate_random_function(f[1], x, y),evaluate_random_function(f[2], x, y))
     return fun
@@ -180,7 +179,7 @@ def color_map(val):
     return int(color_code)
 
 
-def test_image(filename, x_size=350, y_size=350):
+def test_image(filename, x_size=500, y_size=500):
     """Generate a test image with random pixels and save as an image file.
     Args:
         filename: string filename for image (should be .png)
@@ -200,7 +199,7 @@ def test_image(filename, x_size=350, y_size=350):
     im.save(filename)
 
 
-def generate_art(filename, x_size=350, y_size=350):
+def generate_art(filename, x_size=500, y_size=500):
     """Generate computational art and save as an image file.
 
     Args:
@@ -208,9 +207,9 @@ def generate_art(filename, x_size=350, y_size=350):
         x_size, y_size: optional args to set image dimensions (default: 350)
     """
     # Functions for red, green, and blue channels - where the magic happens!
-    red_function = build_random_function(15, 25)
-    green_function = build_random_function(15, 25)
-    blue_function = build_random_function(15, 25)
+    red_function = build_random_function(25, 35)
+    green_function = build_random_function(25, 35)
+    blue_function = build_random_function(25, 35)
     # Create image and loop over all pixels
     im = Image.new("RGB", (x_size, y_size))
     pixels = im.load()
@@ -235,9 +234,12 @@ if __name__ == '__main__':
     # TODO: Un-comment the generate_art function call after you
     #       implement remap_interval and evaluate_random_function
     #generate_art("myart.png")
-    #generate_art("myart1.png")
 
-    generate_art("as.png")
+
+    generate_art("personal_grudge.png")
+    generate_art("i_forgot_your_birthday")
+    generate_art("fresh_laundry.png")
+
     # Test that PIL is installed correctly
     # TODO: Comment or remove this function call after testing PIL install
     #test_image("noise.png")
