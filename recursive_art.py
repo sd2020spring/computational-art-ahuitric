@@ -1,5 +1,6 @@
 """
-This program should hopefully create some cool computational art
+This program generates colorful, randomly generated computational art that is saved as
+image files.
 
 @author: Alana Huitric
 """
@@ -10,33 +11,42 @@ from collections.abc import Iterable
 from PIL import Image
 
 def prod(a,b):
+    """ Returns product of a and b """
     return a*b
 
 def avg(a,b):
+    """ Returns average of a and b """
     return 0.5*(a+b)
 
 def cos_pi(a):
+    """ Returns cosine(a) """
     return math.cos(math.pi*a)
 
 def sin_pi(a):
+    """ Returns sine(a) """
     return math.sin(math.pi*a)
 
-def xx(a,b):
+def x(a,b):
+    """ Returns the first parameter """
     return a
 
-def yy(a,b):
+def y(a,b):
+    """ Returns the second parameter """
     return b
 
-def sqr(a):
+def square(a):
+    """ Returns a squared """
     return a*a
 
 def div(a,b):
+    """ If possible, returns a divided by b, otherwise returns a """
     if b != 0:
         return a/b
     else:
         return a
 
-def powie(a):
+def mult_random_factorial(a):
+    """ Returns a multiplied by the factorial of a random number between 3 and 6 """
     i = random.randint(3,6)
     while i > 0:
         a *= i
@@ -46,15 +56,12 @@ def powie(a):
 def build_random_function(min_depth, max_depth):
     """Build a random function.
     Builds a random function of depth at least min_depth and depth at most
-    max_depth. (See the assignment write-up for the definition of depth
-    in this context)
+    max_depth.
     Args:
         min_depth: the minimum depth of the random function
         max_depth: the maximum depth of the random function
     Returns:
         The randomly generated function represented as a nested list.
-        (See the assignment writ-eup for details on the representation of
-        these functions)
     """
     rand = random.randint(1,9)
     f = []
@@ -69,27 +76,26 @@ def build_random_function(min_depth, max_depth):
             elif rand == 4:
                 f = ["sin_pi", build_random_function(min_depth - 1, max_depth - 1)]
             elif rand == 5:
-                f = ["xx",build_random_function(min_depth - 1, max_depth - 1)]
+                f = ["x",build_random_function(min_depth - 1, max_depth - 1)]
             elif rand == 6:
-                f = ["yy", build_random_function(min_depth - 1, max_depth - 1)]
+                f = ["y", build_random_function(min_depth - 1, max_depth - 1)]
             elif rand == 7:
-                f = ["sqr", build_random_function(min_depth - 1, max_depth - 1)]
+                f = ["square", build_random_function(min_depth - 1, max_depth - 1)]
             elif rand == 8:
-                f = ["powie", build_random_function(min_depth - 1, max_depth - 1)]
+                f = ["mult_random_factorial", build_random_function(min_depth - 1, max_depth - 1)]
             else:
                 f = ["div", build_random_function(min_depth - 1, max_depth - 1), build_random_function(min_depth - 1, max_depth - 1)]
         else:
             if random.randint(0,1) == 1:
                 if random.randint(0,1) == 1:
-                    return ["xx"]
+                    return ["x"]
                 else:
-                    return ["yy"]
+                    return ["y"]
     return f
 
 
 def evaluate_random_function(f, x, y):
     """Evaluate the random function f with inputs x,y.
-    The representation of the function f is defined in the assignment write-up.
     Args:
         f: the function to evaluate
         x: the value of x to be used to evaluate the function
@@ -102,9 +108,9 @@ def evaluate_random_function(f, x, y):
         >>> evaluate_random_function(["y"],0.1,0.02)
         0.02
     """
-    if f[0] == 'xx':
+    if f[0] == 'x':
         return x
-    elif f[0] == 'yy':
+    elif f[0] == 'y':
         return y
     elif f[0] == 'prod':
         fun = prod(evaluate_random_function(f[1], x, y),evaluate_random_function(f[2], x, y))
@@ -114,14 +120,15 @@ def evaluate_random_function(f, x, y):
         fun = cos_pi(evaluate_random_function(f[1], x, y))
     elif f[0] == 'sin_pi':
         fun = sin_pi(evaluate_random_function(f[1], x, y))
-    elif f[0] == 'sqr':
-        fun = sqr(evaluate_random_function(f[1], x, y))
-    elif f[0] == 'powie':
-        fun = powie(evaluate_random_function(f[1],x,y))
+    elif f[0] == 'square':
+        fun = square(evaluate_random_function(f[1], x, y))
+    elif f[0] == 'mult_random_factorial':
+        fun = mult_random_factorial(evaluate_random_function(f[1],x,y))
     else:
         fun = div(evaluate_random_function(f[1], x, y),evaluate_random_function(f[2], x, y))
     return fun
-#try return statements instead of fun but also maybe get rid of all the random jazz with iterable types like idk what that is
+
+
 def remap_interval(val,
                    input_interval_start,
                    input_interval_end,
@@ -157,6 +164,7 @@ def remap_interval(val,
     n = p*(output_interval_end - output_interval_start) + output_interval_start
     return n
 
+
 def color_map(val):
     """Maps input value between -1 and 1 to an integer 0-255, suitable for use as an RGB color code.
     Args:
@@ -173,9 +181,7 @@ def color_map(val):
         >>> color_map(0.5)
         191
     """
-    # NOTE: This relies on remap_interval, which you must provide
     color_code = remap_interval(val, -1, 1, 0, 255)
-    #print(color_code)
     return int(color_code)
 
 
@@ -200,13 +206,13 @@ def test_image(filename, x_size=500, y_size=500):
 
 
 def generate_art(filename, x_size=500, y_size=500):
-    """Generate computational art and save as an image file.
+    """Generates computational art and save as an image file.
 
     Args:
         filename: string filename for image (should be .png)
         x_size, y_size: optional args to set image dimensions (default: 350)
     """
-    # Functions for red, green, and blue channels - where the magic happens!
+    # Functions for red, green, and blue channels
     red_function = build_random_function(25, 35)
     green_function = build_random_function(25, 35)
     blue_function = build_random_function(25, 35)
@@ -228,17 +234,8 @@ def generate_art(filename, x_size=500, y_size=500):
 
 if __name__ == '__main__':
     import doctest
-    #doctest.testmod()
-
-    # Create some computational art!
-    # TODO: Un-comment the generate_art function call after you
-    #       implement remap_interval and evaluate_random_function
-    #generate_art("myart.png")
-
-
-    generate_art("personal_grudge.png")
-    generate_art("i_forgot_your_birthday")
-    generate_art("fresh_laundry.png")
+    doctest.testmod()
+    generate_art("myart.png")
 
     # Test that PIL is installed correctly
     # TODO: Comment or remove this function call after testing PIL install
