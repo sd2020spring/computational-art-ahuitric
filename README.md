@@ -1,6 +1,6 @@
 # Computational Art
 
-This project recursively generates art based on random math equations that
+This project recursively generates art based on random math equations.
 
 ## Getting Started
 
